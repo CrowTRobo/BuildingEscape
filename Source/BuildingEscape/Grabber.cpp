@@ -39,5 +39,14 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	//UE_LOG(LogTemp, Warning, TEXT("Loc: %s ; Rot: %s"), *playerViewLoc.ToString(), *playerViewRot.ToString());
 
 	DrawDebugLine(GetWorld(), playerViewLoc, lineTraceEnd, FColor(0, 255, 0), false, 0.0f, 0, 10.0f);
+
+	// Cast out ray to find PhysicsBody objects.
+	FHitResult hitResult;
+	GetWorld()->LineTraceSingleByObjectType(hitResult, playerViewLoc, lineTraceEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		FCollisionQueryParams(FName(TEXT("")), false, GetOwner()));
+	
+	if (hitResult.GetActor())
+		UE_LOG(LogTemp, Warning, TEXT("Trace hit: %s"), *hitResult.GetActor()->GetName())
 }
 
