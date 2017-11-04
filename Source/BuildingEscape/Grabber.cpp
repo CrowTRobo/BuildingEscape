@@ -3,6 +3,7 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "Components/PrimitiveComponent.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber() {
@@ -40,6 +41,18 @@ void UGrabber::BeginPlay() {
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+	// Move grabbed component to end of reach
+	if (physicsHandle->GrabbedComponent) {
+		FVector playerViewLoc;
+		FRotator playerViewRot;
+
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(playerViewLoc, playerViewRot);
+
+		FVector lineTraceEnd = playerViewLoc + (playerViewRot.Vector() * reach);
+
+		physicsHandle->SetTargetLocation(lineTraceEnd);
+	}
 }
 
 // Ray-cast and grab object within reach
@@ -63,10 +76,14 @@ void UGrabber::Grab() {
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		FCollisionQueryParams(FName(TEXT("")), false, GetOwner()));
 
-	if (hitResult.GetActor())
+	UPrimitiveComponent *componentToGrab = hitResult.GetComponent();
+
+	// Grab component if trace hit an actor
+	if (hitResult.GetActor()) {
 		UE_LOG(LogTemp, Warning, TEXT("Trace hit: %s"), *hitResult.GetActor()->GetName())
 
-	// TODO: Attach PhysicsHandle
+		physicsHandle->GrabComponentAtLocationWithRotation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation(), componentToGrab->GetOwner()->GetActorRotation());
+	}
 }
 
 // Release the object that has been grabbed
@@ -74,6 +91,7 @@ void UGrabber::Release() {
 	
 	UE_LOG(LogTemp, Warning, TEXT("Release action pressed"))
 
-	// TODO: Release PhysicsHandle
+	// Release PhysicsHandle
+	physicsHandle->ReleaseComponent();
 }
 
