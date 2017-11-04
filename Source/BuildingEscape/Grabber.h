@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/InputComponent.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
@@ -29,4 +30,8 @@ private:
 	float reach = 100.0f;
 
 	UPhysicsHandleComponent *physicsHandle = nullptr;
+	UInputComponent *inputComponent = nullptr;
+
+	// Ray-cast and grab object within reach.
+	void Grab();
 };
