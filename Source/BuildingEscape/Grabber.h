@@ -37,4 +37,10 @@ private:
 
 	// Release the object that has been grabbed
 	void Release();
+
+	// Obtains the start of the line trace
+	FVector GetLineTraceStart() const;
+
+	// Obtains the end of the line trace
+	FVector GetLineTraceEnd() const;
 };
