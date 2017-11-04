@@ -3,6 +3,7 @@
 #include "OpenDoor.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
+#include "Components/PrimitiveComponent.h"
 #include "Grabber.h"
 
 // Sets default values for this component's properties
@@ -53,6 +54,16 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 // Calculates the total mass in kg currently on pressure plate
 float UOpenDoor::GetTotalMassOnPlate() {
 
-	return 60.0f;
+	TArray<AActor*> overlappingActors;
+	pressurePlate->GetOverlappingActors(overlappingActors);
+
+	float totalMass = 0.0f;
+
+	for (auto& actor : overlappingActors) {
+		totalMass += actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		UE_LOG(LogTemp, Warning, TEXT("Overlapping actor: %s total mass: %f"), *actor->GetName(), totalMass);
+	}
+
+	return totalMass;
 }
 
