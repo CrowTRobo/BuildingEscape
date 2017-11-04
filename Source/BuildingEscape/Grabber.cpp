@@ -42,7 +42,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
 	// Move grabbed component to end of reach
-	if (physicsHandle->GrabbedComponent) {
+	if (physicsHandle && physicsHandle->GrabbedComponent) {
 		physicsHandle->SetTargetLocation(GetLineTraceEnd());
 	}
 }
@@ -83,7 +83,7 @@ void UGrabber::Grab() {
 	UPrimitiveComponent *componentToGrab = hitResult.GetComponent();
 
 	// Grab component if trace hit an actor
-	if (hitResult.GetActor()) {
+	if (physicsHandle && hitResult.GetActor()) {
 		physicsHandle->GrabComponentAtLocationWithRotation(componentToGrab, NAME_None, componentToGrab->GetOwner()->GetActorLocation(), componentToGrab->GetOwner()->GetActorRotation());
 	}
 }
@@ -93,6 +93,8 @@ void UGrabber::Grab() {
 void UGrabber::Release() {
 	
 	// Release PhysicsHandle
-	physicsHandle->ReleaseComponent();
+	
+	if (physicsHandle) 
+		physicsHandle->ReleaseComponent();
 }
 

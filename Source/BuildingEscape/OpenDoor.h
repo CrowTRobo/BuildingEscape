@@ -30,7 +30,7 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume *pressurePlate;
+	ATriggerVolume *pressurePlate = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	float openAngle = 90.0f;
@@ -42,7 +42,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	float triggerMass;
 
-	AActor *owner;
+	AActor *owner = nullptr;
 
 	float GetTotalMassOnPlate();
 };
