@@ -3,6 +3,7 @@
 #include "OpenDoor.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
+#include "Grabber.h"
 
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
@@ -21,7 +22,6 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	owner = GetOwner();
-	actorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 }
 
 void UOpenDoor::OpenDoor()
@@ -40,12 +40,19 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// Poll the TriggerVolume
-	if (pressurePlate && pressurePlate->IsOverlappingActor(actorThatOpens)) {
+	if (pressurePlate && GetTotalMassOnPlate() >= triggerMass) {
 		OpenDoor();
 		lastDoorOpenTime = GetWorld()->GetTimeSeconds();
 	}
 	else if (GetWorld()->GetTimeSeconds() - lastDoorOpenTime >= doorCloseDelay) {
 		CloseDoor();
 	}
+}
+
+
+// Calculates the total mass in kg currently on pressure plate
+float UOpenDoor::GetTotalMassOnPlate() {
+
+	return 60.0f;
 }
 

@@ -40,6 +40,9 @@ private:
 	float lastDoorOpenTime;
 
 	UPROPERTY(EditAnywhere)
-	AActor *actorThatOpens;
+	float triggerMass;
+
 	AActor *owner;
+
+	float GetTotalMassOnPlate();
 };
